@@ -1,11 +1,11 @@
 <?
 	class dbConnect
 	{
+		var $handle;
 		function dbConnect()
 		{
-			mysql_connect("localhost","root","olloncocktail");
-			mysql_select_db("shooting");
-			mysql_query("set names utf8;");
+			$this->handle = mysqli_connect("localhost","root","olloncocktail","shooting");
+			$this->handle->query("set names utf8;",MYSQLI_STORE_RESULT);
 		}
 	}
 

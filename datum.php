@@ -3,6 +3,7 @@ class Datum
 {
 	function toDecimal($str)
 	{
+		echo("Str: " . $str . "<br>");
 		$temp = explode(" ",$str);
 		
 		$int = (int)trim(substr($temp[0],1));

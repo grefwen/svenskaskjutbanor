@@ -22,7 +22,7 @@
       mapTypeId: google.maps.MapTypeId.ROADMAP
     }
     var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-    <? getPoints() ?>
+    <? //getPoints() ?>
   }
 </script>
 </head> 
@@ -90,7 +90,7 @@ function getPoints()
 			
 			if ($rangetype == 2) // luft/inomhus
 				$icon = "mm_20_purple.png";
-			else if ($rangetype == 3) // gevär (80m+)
+			else if ($rangetype == 3) // gevï¿½r (80m+)
 				$icon = "mm_20_green.png";
 			else if ($rangetype == 4) // pistol (25m)
 				$icon = "mm_20_blue.png";
@@ -100,7 +100,7 @@ function getPoints()
 				$icon = "mm_20_white.png";
 			else if ($rangetype == 7) // Nedlagd
 				$icon = "mm_20_black.png";
-			else if ($rangetype == 8) // Älgbana/Viltbana
+			else if ($rangetype == 8) // ï¿½lgbana/Viltbana
 				$icon = "mm_20_brown.png";
 			else
 				$icon = "mm_20_red.png"; // Mixat/vet ej

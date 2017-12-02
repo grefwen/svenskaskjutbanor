@@ -2,40 +2,41 @@
 require_once("db_connect.php");
 require_once("datum.php");
 
-new dbConnect();
+$db = new dbConnect ();
+$db = $db->handle;
 $datum = new Datum();
 
 echo("<h1>Svenska skjutbanor</h1>");
 
 $query = "select count(*) from ShootingRange where lat is not null;";
-$result = mysql_query($query);
-if (mysql_num_rows($result) != 0)
+$result = $db->query ( $query );
+if ($result->num_rows != 0) 
 {
-	$row = mysql_fetch_row($result);
+	$row = $result->fetch_row ();
 	echo("<p>Antal skjutbanor i databasen: " . $row[0] . "</p>");
 }
 
 $query = "select distinct l.id, l.name from Location l, ShootingRange r where l.id = r.locationid order by l.name;";
-$result = mysql_query($query);
+$result = $db->query ( $query );
 
-echo(utf8_encode("<p>Nedanstående i GoogleMap-format finns <a href='googlemaps.php' target='_new'>här</a>.<br>En GPX-fil för din GPS finns <a href='http://grefwen.mine.nu/skytte/shootingwaypoints.gpx'>här</a>. Högerklicka och \"spara som...\"</p>"));
+echo("<p>NedanstÃ¥ende i GoogleMap-format finns <a href='googlemaps.php' target='_new'>hÃ¤r</a>.<br>En GPX-fil fÃ¶r din GPS finns <a href='http://grefwen.mine.nu/skytte/shootingwaypoints.gpx'>hÃ¤r</a>. HÃ¶gerklicka och \"spara som...\"</p>");
 
-if (mysql_num_rows($result) != 0)
+if ($result->num_rows != 0)
 {
 
-	while ($row = mysql_fetch_row($result))
+	while ($row = $result->fetch_row ())
 	{
 		echo("<h2>". $row[1] . "</h2>\n");
 
 		$query = "select r.id,r.name, r.lat, r.lon, r.description, rt.name from ShootingRange r, RangeType rt where r.rangetypeid = rt.id and r.locationid = " . $row[0] . " order by r.name;";
 		//echo("Q: " . $query . "<br>\n");
 		
-		$result2 = mysql_query($query);
+		$result2 = $db->query ( $query );
 		$diciplines;
 		$clubs;
 		$description;
 
-		while ($row2 = mysql_fetch_row($result2))
+		while ($row2 = $result2->fetch_row ())
 		{
 			$gps = "";
 			$description = "";
@@ -54,8 +55,11 @@ if (mysql_num_rows($result) != 0)
 					$lonPrefix = "W";
 				if ($lon < 100)
 					$lonPrefix .= "0";
-
-				$gps = $latPrefix . $datum->toWGS84($lat) . ", " . $lonPrefix . $datum->toWGS84($lon);
+				//echo("Lat: " . $lat);
+				//echo("Lon: " . $lon);
+				$gps = $lat . ", " . $lon;
+			//	echo("GPS: " . $gps);
+				//exit();
 				//$gps = trim($row2[2]) . ", " . trim($row2[3]);
 			}
 
@@ -81,9 +85,9 @@ if (mysql_num_rows($result) != 0)
 			// Hemmaklubbar -------------------------
 			$query = "select c.name, c.website from Club c, RangeHomeclub hc, ShootingRange r where hc.ClubID = c.id and r.id = hc.rangeID and r.id = " . $row2[0] . " order by name;";
 			//echo("Q: " . $query . "<br>\n");
-			$result3 = mysql_query($query);
+			$result3 = $db->query ( $query );
 			
-			while ($row3 = mysql_fetch_row($result3))
+			while ($row3 = $result3->fetch_row ())
 			{
 				if (trim($row3[1]) != "")
 					$clubs[] = "<a href='" . $row3[1] . "' target='_new'>" . $row3[0] . "</a>";
@@ -95,17 +99,17 @@ if (mysql_num_rows($result) != 0)
 			echo("<tr><td valign='top'>" . utf8_encode("<b>Banans hemmaklubb(ar):</b>") . "</td><td>" . $clubs . "</td></tr>");
 			$clubs = "";
 
-			// Tillåtna grenar ------------------------
+			// Tillï¿½tna grenar ------------------------
 			$query = "select d.name from Dicipline d, AllowedDicipline ad, ShootingRange r where ad.DiciplineID = d.id and r.id = ad.rangeID and r.id = " . $row2[0] . " order by name;";
 
-			$result3 = mysql_query($query);
+			$result3 = $db->query ( $query );
 			
-			while ($row3 = mysql_fetch_row($result3))
+			while ($row3 = $result3->fetch_row ())
 			{
 				$diciplines[] = $row3[0];
 			}
 			$diciplines = implode("<br>",$diciplines);	
-			echo("<tr><td valign='top'>" . utf8_encode("<b>Tillåtna grenar:</b>") . "</td><td>" . $diciplines . "</td></tr>");
+			echo("<tr><td valign='top'>" . "<b>TillÃ¥tna grenar:</b>" . "</td><td>" . $diciplines . "</td></tr>");
 			$diciplines = "";
 
 			// Beskrivning ------------------------------
