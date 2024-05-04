@@ -19,7 +19,7 @@ if ($result->num_rows != 0)
 $query = "select distinct l.id, l.name from Location l, ShootingRange r where l.id = r.locationid order by l.name;";
 $result = $db->query ( $query );
 
-echo("<p>Nedanstående i GoogleMap-format finns <a href='googlemaps.php' target='_new'>här</a>.<br>En GPX-fil för din GPS finns <a href='http://grefwen.mine.nu/skytte/shootingwaypoints.gpx'>här</a>. Högerklicka och \"spara som...\"</p>");
+echo("<p>Nedanstående i GoogleMap-format finns <a href='googlemaps.php' target='_new'>här</a>.<br>En GPX-fil för din GPS finns <a href='shootingwaypoints.gpx'>här</a>. Högerklicka och \"spara som...\"</p>");
 
 if ($result->num_rows != 0)
 {
@@ -83,6 +83,7 @@ if ($result->num_rows != 0)
 			echo("<tr><td valign='top'>" . utf8_encode("<b>Bantyp:</b>") . "</td><td>" . $row2[5] . "</td></tr>");
 
 			// Hemmaklubbar -------------------------
+			$clubs = array();
 			$query = "select c.name, c.website from Club c, RangeHomeclub hc, ShootingRange r where hc.ClubID = c.id and r.id = hc.rangeID and r.id = " . $row2[0] . " order by name;";
 			//echo("Q: " . $query . "<br>\n");
 			$result3 = $db->query ( $query );
@@ -95,11 +96,13 @@ if ($result->num_rows != 0)
 					$clubs[] = $row3[0];
 
 			}
+			if (isset($clubs))				
 			$clubs = implode("<br>",$clubs);		
 			echo("<tr><td valign='top'>" . utf8_encode("<b>Banans hemmaklubb(ar):</b>") . "</td><td>" . $clubs . "</td></tr>");
 			$clubs = "";
 
 			// Till�tna grenar ------------------------
+			$diciplines = array();
 			$query = "select d.name from Dicipline d, AllowedDicipline ad, ShootingRange r where ad.DiciplineID = d.id and r.id = ad.rangeID and r.id = " . $row2[0] . " order by name;";
 
 			$result3 = $db->query ( $query );
@@ -108,10 +111,10 @@ if ($result->num_rows != 0)
 			{
 				$diciplines[] = $row3[0];
 			}
-			$diciplines = implode("<br>",$diciplines);	
+			$diciplines = implode("<br>",$diciplines);
 			echo("<tr><td valign='top'>" . "<b>Tillåtna grenar:</b>" . "</td><td>" . $diciplines . "</td></tr>");
 			$diciplines = "";
-
+		
 			// Beskrivning ------------------------------
 
 			echo("<tr><td valign='top'>" . utf8_encode("<b>Beskrivning:</b>") . "</td><td>" . $description . "</td></tr>");
@@ -123,7 +126,7 @@ if ($result->num_rows != 0)
 	echo("<hr>");
 	}
 }
-
+/*
 // klasser och organisationer
 echo("<h2>Grenar</h2>");
 $query = "select d.name from Dicipline d order by d.name;";
@@ -139,3 +142,4 @@ if (mysql_num_rows($result) != 0)
 	echo("</table>");
 
 }
+*/
